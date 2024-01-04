@@ -6,12 +6,18 @@ def parse_command(command):
     else:
         return command_parts[0], None
 
+
 contacts = dict()
+
 
 def add_contact(details):
     name, number = details.split()
-    contacts[name] = number
-    return f"Added {name} with number {number} to contacts."
+    if name in contacts:
+        return f"This name {name} is already in contacts"
+    else:
+        contacts[name] = number
+        return f"Added {name} with number {number} to contacts."
+
 
 def change_contact(details):
     name, number = details.split()
@@ -21,11 +27,13 @@ def change_contact(details):
     else:
         return f"{name} not found in contacts."
 
+
 def phone_number(name):
     if name in contacts:
         return f"The phone number for {name} is {contacts[name]}."
     else:
         return f"{name} not found in contacts."
+
 
 def show_all():
     if contacts:
@@ -35,8 +43,11 @@ def show_all():
     else:
         return "No contacts available."
 
+
 def exit_bot():
     return "Good bye!"
+
+
 def input_error(func):
     def wrapper(*args, **kwargs):
         try:
@@ -47,9 +58,8 @@ def input_error(func):
             return "Give me name and phone please"
         except IndexError:
             return "Invalid input"
-        except AttributeError:
-            return "Attribute error"
     return wrapper
+
 
 @input_error
 def execute_command(action, details=None):
@@ -61,12 +71,15 @@ def execute_command(action, details=None):
         return change_contact(details)
     elif action == 'phone':
         return phone_number(details)
-    elif action == 'show':
+    elif action == 'show' and details == 'all':
         return show_all()
-    elif action in ['good', 'bye', 'close', 'exit']:
+    elif action == 'good' and details == 'bye':
+        return exit_bot()
+    elif action in ['close', 'exit']:
         return exit_bot()
     else:
         return "Command not recognized."
+
 
 def main():
     while True:
@@ -76,6 +89,7 @@ def main():
         print(result)
         if result == "Good bye!":
             break
+
 
 if __name__ == "__main__":
     main()
